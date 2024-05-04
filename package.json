@@ -1,0 +1,25 @@
+{
+  "name": "24001132-11-mrf-ecommerce-gold",
+  "version": "1.0.0",
+  "description": "Gold Challenge Binar BEJ Wave 11",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/razanfawwaz/24001132-11-mrf-ecommerce-gold.git"
+  },
+  "author": "Muhammad Razan Fawwaz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/razanfawwaz/24001132-11-mrf-ecommerce-gold/issues"
+  },
+  "homepage": "https://github.com/razanfawwaz/24001132-11-mrf-ecommerce-gold#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.11.5",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.3"
+  }
+}
