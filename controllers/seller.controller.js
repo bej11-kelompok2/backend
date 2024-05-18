@@ -70,7 +70,7 @@ class SellerController {
 
   findItemById = async (req, res) => {
     try {
-      const item = await this.sellerService.findItemById(req.params.sellerId, req.params.itemId);
+      const item = await this.sellerService.findItemById(req.params.itemId);
       res.json(new BaseResponse(true, 'Item found', item));
     } catch (error) {
       res.status(404).json(new BaseResponse(false, error.message, null));

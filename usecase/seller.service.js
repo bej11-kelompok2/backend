@@ -49,13 +49,8 @@ class SellerService {
     return await this.sellerRepo.createItem(sellerId, item);
   }
 
-  async findItemById(sellerId, itemId) {
-    const seller = await this.sellerRepo.findById(sellerId);
-    if (!seller) {
-      throw new Error('Seller not found');
-    }
-
-    const item = await this.sellerRepo.findItemById(sellerId, itemId);
+  async findItemById(itemId) {
+    const item = await this.sellerRepo.findItemById(itemId);
     if (!item) {
       throw new Error('Item not found');
     }

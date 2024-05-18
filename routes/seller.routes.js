@@ -10,7 +10,7 @@ router.put('/seller/:id', sellerController.update);
 router.delete('/seller/:id', sellerController.delete);
 router.post('/seller/login', sellerController.login);
 router.post('/seller/:sellerId/item', sellerController.createItem);
-router.get('/seller/:sellerId/item/:itemId', sellerController.findItemById);
 router.get('/seller/:sellerId/items', sellerController.findAllItems);
+router.get('/item/:itemId', sellerController.findItemById);
 
 module.exports = router;

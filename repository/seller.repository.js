@@ -41,8 +41,8 @@ class SellerRepository {
     return await Item.create(item);
   }
 
-  async findItemById(sellerId, itemId) {
-    return await Item.findOne({ where: { id: itemId, seller_id: sellerId } });
+  async findItemById(itemId) {
+    return await Item.findOne({ where: { id: itemId } });
   }
 
   async findAllItems(sellerId) {
