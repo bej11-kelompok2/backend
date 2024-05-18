@@ -4,7 +4,9 @@ const { UniqueConstraintError } = require('sequelize'); // Import the relevant e
 
 class UserRepository {
   async findById(id) {
-    const data = await User.findByPk(id);
+    const data = await User.findByPk(id, {
+      attributes: { exclude: ['password'] },
+    });
 
     if (!data) {
       throw new Error('User not found');

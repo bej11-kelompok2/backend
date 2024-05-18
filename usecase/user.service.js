@@ -18,18 +18,6 @@ class UserService {
     return newUser;
   }
 
-  async login(email, password) {
-    const user = await this.userRepo.findByEmail(email);
-    if (!user) {
-      throw new Error('User not found');
-    }
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-      throw new Error('Password is incorrect');
-    }
-    return user;
-  }
-
   async update(id, userUpdates) {
     return await this.userRepo.update(id, userUpdates);
   }
