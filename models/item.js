@@ -6,11 +6,11 @@ module.exports = (sequelize, DataTypes) => {
   class Item extends Model {
     static associate(models) {
       // Each item belongs to one seller
-      Item.belongsTo(models.Seller, { foreignKey: 'seller_id' });
+      Item.belongsTo(models.Seller, { foreignKey: 'id' });
       // Each item can be in many carts through CartItem
-      Item.hasMany(models.CartItem, { foreignKey: 'item_id' });
+      Item.hasMany(models.CartItem, { foreignKey: 'id' });
       // Each item can be in many orders through OrderItem
-      Item.hasMany(models.OrderItem, { foreignKey: 'item_id' });
+      Item.hasMany(models.OrderItem, { foreignKey: 'id' });
     }
   }
   Item.init({
@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     description: DataTypes.TEXT,
     price: DataTypes.DECIMAL,
-    stock: DataTypes.INTEGER,
+    stock: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Item',
