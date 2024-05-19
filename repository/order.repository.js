@@ -1,4 +1,4 @@
-const { Order, OrderItem, Cart, CartItem, sequelize } = require('../models');
+const { Order, OrderItem, Cart, CartItem, Item, sequelize } = require('../models');
 
 class OrderRepository {
 
@@ -18,6 +18,7 @@ class OrderRepository {
   async createOrderItem(orderId, cartId) {
     const transaction = await sequelize.transaction();
     try {
+      console.log(orderId)
       const cartItems = await CartItem.findAll({
         where: {
           cart_id: cartId
@@ -26,11 +27,13 @@ class OrderRepository {
 
       for (const cartItem of cartItems) {
         await OrderItem.create({
-          orderId: orderId,
-          productId: cartItem.productId,
-          quantity: cartItem.quantity
+          order_id: orderId,
+          item_id: cartItem.item_id,
+          quantity: cartItem.quantity,
         }, { transaction });
       }
+
+
       await CartItem.destroy({
         where: {
           cart_id: cartId

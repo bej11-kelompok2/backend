@@ -5,6 +5,9 @@ const userRoutes = require("./routes/user.routes");
 const sellerRoutes = require("./routes/seller.routes");
 const cartRoutes = require("./routes/cart.routes");
 const orderRoutes = require("./routes/order.routes");
+const logger = require("./util/logger");
+
+app.use(logger)
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
