@@ -1,7 +1,6 @@
 const UserService = require('../usecase/user.service');
 const BaseResponse = require('../util/base.response')
 
-
 class UserController {
   constructor() {
     this.userService = new UserService();
