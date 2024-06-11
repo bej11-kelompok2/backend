@@ -1,0 +1,426 @@
+openapi: 3.0.0
+info:
+  title: Binar Challenge Gold
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+	description: Development server
+tags:
+  - name: User
+  - name: Seller
+  - name: Cart
+  - name: Order
+paths:
+  /api/v1/user/{userId}:
+    get:
+      tags:
+        - User
+      summary: Find User By ID
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '15'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - User
+      summary: Delete User By ID
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '15'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - User
+      summary: Update User By ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: razanfawwaz
+                email: razan@binar.com
+                password: '123'
+                address: lambhuk
+                phone_number: '01212121'
+                gender: male
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '15'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/login:
+    post:
+      tags:
+        - User
+      summary: User Login
+      requestBody:
+        content: {}
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/user/register:
+    post:
+      tags:
+        - User
+      summary: User Register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: razanfawwaz
+                email: razan@binar.com
+                password: '123'
+                address: lambhuk
+                phone_number: '01212121'
+                gender: male
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/seller/{sellerId}:
+    get:
+      tags:
+        - Seller
+      summary: Find Seller By ID
+      parameters:
+        - name: sellerId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Seller
+      summary: Delete Seller By ID
+      parameters:
+        - name: sellerId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Seller
+      summary: Update Seller By ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: tokopaedi
+                email: paedi@binar.com
+                contact_number: '01212121'
+      parameters:
+        - name: sellerId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/seller/{sellerId}/items:
+    get:
+      tags:
+        - Seller
+      summary: Get All Items
+      parameters:
+        - name: sellerId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/item/1:
+    get:
+      tags:
+        - Seller
+      summary: Get Item By ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/seller/register:
+    post:
+      tags:
+        - Seller
+      summary: Seller Register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: tokopaedi
+                email: paedi@binar.com
+                password: '123'
+                contact_number: '01212121'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/seller/{sellerId}/item:
+    post:
+      tags:
+        - Seller
+      summary: Post Item
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Baju Kaos Oblong
+                description: Baju warna hitam ukuran xl ready stock nego dm
+                price: '30000'
+                stock: 100
+      parameters:
+        - name: sellerId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/seller/login:
+    post:
+      tags:
+        - Seller
+      summary: Seller Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: paedi@binar.com
+                password: '123'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/cart/{userId}:
+    post:
+      tags:
+        - Cart
+      summary: Add to Cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                itemId: 1
+                quantity: 2
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '15'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Cart
+      summary: Get Cart
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '15'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Cart
+      summary: Remove Item from Cart
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '15'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/order/{userId}:
+    get:
+      tags:
+        - Order
+      summary: Get Orders
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '15'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Order
+      summary: Create Order
+      requestBody:
+        content: {}
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '15'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/order/sent/{orderId}:
+    put:
+      tags:
+        - Order
+      summary: Sent Order
+      requestBody:
+        content: {}
+      parameters:
+        - name: orderId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '5'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/order/delivered/{orderId}:
+    put:
+      tags:
+        - Order
+      summary: Delivered Order
+      requestBody:
+        content: {}
+      parameters:
+        - name: orderId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '5'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/order/cancel/{orderId}:
+    put:
+      tags:
+        - Order
+      summary: Cancel Order
+      requestBody:
+        content: {}
+      parameters:
+        - name: orderId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '5'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/order/pay/{orderId}:
+    put:
+      tags:
+        - Order
+      summary: Pay Order
+      requestBody:
+        content: {}
+      parameters:
+        - name: orderId
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '5'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
