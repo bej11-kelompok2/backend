@@ -1,27 +1,28 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Item extends Model {
     static associate(models) {
       // Each item belongs to one seller
-      Item.belongsTo(models.Seller, { foreignKey: 'id' });
+      Item.belongsTo(models.Seller, { foreignKey: "id" });
       // Each item can be in many carts through CartItem
-      Item.hasMany(models.CartItem, { foreignKey: 'id' });
+      Item.hasMany(models.CartItem, { foreignKey: "id" });
       // Each item can be in many orders through OrderItem
-      Item.hasMany(models.OrderItem, { foreignKey: 'id' });
+      Item.hasMany(models.OrderItem, { foreignKey: "id" });
     }
   }
-  Item.init({
-    seller_id: DataTypes.INTEGER,
-    name: DataTypes.STRING,
-    description: DataTypes.TEXT,
-    price: DataTypes.DECIMAL,
-    stock: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'Item',
-  });
+  Item.init(
+    {
+      seller_id: DataTypes.INTEGER,
+      name: DataTypes.STRING,
+      description: DataTypes.TEXT,
+      price: DataTypes.DECIMAL,
+      stock: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: "Item",
+    }
+  );
   return Item;
 };
