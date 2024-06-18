@@ -1,15 +1,14 @@
-const { User } = require('../models');
-const { UniqueConstraintError } = require('sequelize'); // Import the relevant error type
-
+const { User } = require("../models");
+const { UniqueConstraintError } = require("sequelize"); // Import the relevant error type
 
 class UserRepository {
   async findById(id) {
     const data = await User.findByPk(id, {
-      attributes: { exclude: ['password'] },
+      attributes: { exclude: ["password"] },
     });
 
     if (!data) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     } else {
       return data;
     }
@@ -17,18 +16,22 @@ class UserRepository {
 
   async create(user) {
     try {
-      return await User.create(user);
+      return await User.create(user, {
+        attributes: { exclude: ["password"] },
+      });
     } catch (error) {
       if (error instanceof UniqueConstraintError) {
-        throw new Error('User already exists');
+        throw new Error("User already exists");
       } else {
-        throw new Error('Error creating user');
+        throw new Error("Error creating user");
       }
     }
   }
 
   async findByEmail(email) {
-    return await User.findOne({ where: { email } });
+    return await User.findOne({
+      where: { email },
+    });
   }
 
   async update(id, userUpdates) {

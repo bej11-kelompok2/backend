@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   class Item extends Model {
     static associate(models) {
       // Each item belongs to one seller
-      Item.belongsTo(models.Seller, { foreignKey: "id" });
+      Item.belongsTo(models.User, { foreignKey: "id" });
       // Each item can be in many carts through CartItem
       Item.hasMany(models.CartItem, { foreignKey: "id" });
       // Each item can be in many orders through OrderItem
