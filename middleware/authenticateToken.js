@@ -13,10 +13,7 @@ const authenticateToken = (req, res, next) => {
     }
 
     // Initialize `req.user` and store user data decoded from the token
-    req.user = {
-      id: decoded.userId,
-      // You can add more user details here if needed
-    };
+    req.user = decode;
 
     next(); // Proceed to next middleware or route handler
   });

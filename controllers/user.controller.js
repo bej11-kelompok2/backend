@@ -9,9 +9,16 @@ class UserController {
   findById = async (req, res) => {
     try {
       const user = await this.userService.findById(req.user.id);
-      res.json(new BaseResponse(true, "User found", user));
+
+      if (!user) {
+        return res
+          .status(400)
+          .json(new BaseResponse(false, "User not found", null));
+      }
+
+      return res.json(new BaseResponse(true, "Success", user));
     } catch (error) {
-      res.status(404).json(new BaseResponse(false, error.message, null));
+      res.status(500).json(new BaseResponse(false, error.message, null));
     }
   };
 
@@ -36,7 +43,7 @@ class UserController {
       const user = await this.userService.create(req.body);
       res.json(new BaseResponse(true, "User created", user));
     } catch (error) {
-      res.status(404).json(new BaseResponse(false, error.message, null));
+      res.status(400).json(new BaseResponse(false, error.message, null));
     }
   };
 
@@ -47,7 +54,14 @@ class UserController {
         req.body.password
       );
       const data = { user, token };
-      res.json(new BaseResponse(true, "User logged in", data));
+
+      if (!user) {
+        return res
+          .status(400)
+          .json(new BaseResponse(false, "User not found", null));
+      }
+
+      return res.json(new BaseResponse(true, "Login success", data));
     } catch (error) {
       res.status(401).json(new BaseResponse(false, error.message, null));
     }
@@ -56,7 +70,7 @@ class UserController {
   update = async (req, res) => {
     try {
       const user = await this.userService.update(req.params.id, req.body);
-      res.json(new BaseResponse(true, "User updated", user));
+      return res.json(new BaseResponse(true, "User updated", user));
     } catch (error) {
       res.status(404).json(new BaseResponse(false, error.message, null));
     }
@@ -65,7 +79,7 @@ class UserController {
   delete = async (req, res) => {
     try {
       await this.userService.delete(req.params.id);
-      res.json(new BaseResponse(true, "User deleted", null));
+      return res.json(new BaseResponse(true, "User deleted", null));
     } catch (error) {
       res.status(404).json(new BaseResponse(false, error.message, null));
     }
