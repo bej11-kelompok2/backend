@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev" : "nodemon index.js"
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -27,7 +27,6 @@
     "pg": "^8.11.5",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.3",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-jsdoc": "^6.2.8"
   }
 }

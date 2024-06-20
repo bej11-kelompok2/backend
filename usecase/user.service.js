@@ -1,6 +1,6 @@
-const UserRepository = require('../repository/user.repository');
-const bcrypt = require('bcrypt');
-const { generateToken } = require('../util/jwt.config');
+const UserRepository = require("../repository/user.repository");
+const bcrypt = require("bcrypt");
+const { generateToken } = require("../util/jwt.config");
 
 class UserService {
   constructor() {
@@ -29,14 +29,15 @@ class UserService {
   async login(email, password) {
     const user = await this.userRepo.findByEmail(email);
     if (!user) {
-      throw new Error('User not found');
-    }
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-      throw new Error('Password is incorrect');
+      throw new Error("User not found");
     }
 
-    const token = generateToken(user.id);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new Error("Invalid password");
+    }
+
+    const token = generateToken(user.id, user.role);
     return { token, user };
   }
 }
