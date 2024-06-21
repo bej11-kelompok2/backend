@@ -61,9 +61,15 @@ class SellerController {
   // Items
   createItem = async (req, res) => {
     try {
-      const item = await this.sellerService.createItem(req.params.sellerId, req.body);
+      const {sellerId} = req.params;
+      const {body, file} = req;
+
+      const item = await this.sellerService.createItem(sellerId, body, file.path)
+
       res.json(new BaseResponse(true, 'Item created', item));
     } catch (error) {
+      
+      console.error('Error in createItem controller:', error);
       res.status(404).json(new BaseResponse(false, error.message, null));
     }
   }

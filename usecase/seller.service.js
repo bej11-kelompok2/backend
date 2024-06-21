@@ -1,7 +1,9 @@
 const SellerRepository = require('../repository/seller.repository');
 const bcrypt = require('bcrypt');
-const { generateToken } = require('../util/jwt.config');
-
+const generateToken = require('../util/jwt.config');
+const cloudinary = require('../util/cloudinary');
+const fs = require('fs');
+const upload = require('../util/multer');
 class SellerService {
   constructor() {
     this.sellerRepo = new SellerRepository();
@@ -41,12 +43,34 @@ class SellerService {
 
   // Items
 
-  async createItem(sellerId, item) {
+  async createItem(sellerId, item, filepath) {
+    //cari seller by id
     const seller = await this.sellerRepo.findById(sellerId);
     if (!seller) {
       throw new Error('Seller not found');
     }
-    return await this.sellerRepo.createItem(sellerId, item);
+
+    try {
+      //unggah file ke cloudinary
+      const result = await cloudinary.uploader.upload(filepath, {
+        use_filename: true 
+      });
+
+      //hapus file dari file local setelah berhasil diunggah
+      fs.unlinkSync(filepath)
+
+      //simpan url ke dalam item sblm buat item di database
+      item.image = uploadResult.url
+
+      return await this.sellerRepo.createItem(sellerId, item); 
+
+    } catch (error) {
+      // Tangani kesalahan saat mengunggah ke Cloudinary atau saat membuat item di sellerRepo
+      console.error('Error creating item:', error);
+      
+      throw new Error('Failed to create item');
+    }
+
   }
 
   async findItemById(itemId) {
