@@ -1,5 +1,7 @@
 const SellerService = require('../usecase/seller.service');
 const BaseResponse = require('../util/base.response')
+const uploadCloudinary = require('../middleware/cloudinary')
+const uploadMulter = require('../util/multer')
 
 class SellerController {
   constructor() {
@@ -61,11 +63,47 @@ class SellerController {
   // Items
   createItem = async (req, res) => {
     try {
-      const item = await this.sellerService.createItem(req.params.sellerId, req.body);
-      res.json(new BaseResponse(true, 'Item created', item));
+      //upload menggunakan multer 
+      uploadMulter.array('images',5)(req,res, async (err) => {
+        if (err) {
+          return res.status(400).json(new BaseResponse(false, err.message, null));
+        }
+        if (!req.files || req.files.length === 0) {
+          return res.status(400).json(new BaseResponse(false, 'No files uploaded or invalid file types', null));
+        }
+        //array untuk menyimpan URL gambar yang diunggah ke cloudinary
+        const imageUrls = await Promise.all(req.files.map(async file => {
+          const imageUrl = await uploadCloudinary(file.path);
+          return imageUrl;
+        }))
+
+        if (imageUrls.some(url => !url)) {
+          return res.status(500).json(new BaseResponse(false, 'Error uploading one or more files to Cloudinary', null));
+        }
+        // Gabungkan data item dengan URL gambar yang diunggah
+        const itemData = {
+        ...req.body,
+        images: imageUrls // Menyimpan array URL gambar
+        }
+        const item = await this.sellerService.createItem(req.params.sellerId, itemData)
+        req.files.forEach(file => {
+          fs.unlinkSync(file.path);
+        });
+        res.json(new BaseResponse(true, 'Item created', item));
+      })
+
     } catch (error) {
-      res.status(404).json(new BaseResponse(false, error.message, null));
+      res.status(500).json(new BaseResponse(false, error.message, null));
     }
+
+
+
+    // try {
+    //   const item = await this.sellerService.createItem(req.params.sellerId, req.body);
+    //   res.json(new BaseResponse(true, 'Item created', item));
+    // } catch (error) {
+    //   res.status(404).json(new BaseResponse(false, error.message, null));
+    // }
   }
 
   findItemById = async (req, res) => {
