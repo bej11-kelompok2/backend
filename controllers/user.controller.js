@@ -40,8 +40,9 @@ class UserController {
           "Username, email, password, address, phone_number, gender are required"
         );
       }
-      const user = await this.userService.create(req.body);
-      res.json(new BaseResponse(true, "User created", user));
+      const {user, mail} = await this.userService.create(req.body);
+      const data = { user, mail };
+      res.json(new BaseResponse(true, "User created", data));
     } catch (error) {
       res.status(400).json(new BaseResponse(false, error.message, null));
     }
@@ -84,6 +85,16 @@ class UserController {
       res.status(404).json(new BaseResponse(false, error.message, null));
     }
   };
+
+  verify = async (req, res) => {
+    try {
+      const userverify  = await this.userService.verify(req.params.id);
+      res.json(new BaseResponse(true, 'User verified', userverify));
+    } catch (error) {
+      res.status(404).json(new BaseResponse(false, error.message, null));
+    }
+  }
+
 }
 
 module.exports = UserController;

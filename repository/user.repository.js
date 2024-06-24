@@ -41,6 +41,14 @@ class UserRepository {
   async delete(id) {
     return await User.destroy({ where: { id } });
   }
+
+  async verify(id) {
+    return data = await User.update({'isVerified': '1'}, {
+      where: {
+          id
+      }
+     })
+  }
 }
 
 module.exports = UserRepository;
