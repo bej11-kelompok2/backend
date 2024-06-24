@@ -8,7 +8,7 @@ class UserController {
 
   findById = async (req, res) => {
     try {
-      const user = await this.userService.findById(req.user.id);
+      const user = await this.userService.findById(req.user.userId);
 
       if (!user) {
         return res

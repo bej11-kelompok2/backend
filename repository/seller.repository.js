@@ -1,26 +1,17 @@
-const { Seller, Item } = require('../models');
-const { UniqueConstraintError } = require('sequelize');
+const { Seller, Item, User } = require("../models");
+const { UniqueConstraintError } = require("sequelize");
 
 class SellerRepository {
   async findById(id) {
-    const data = await Seller.findByPk(id);
+    const data = await User.findByPk(id);
+
+    console.log(id);
+    console.log(data);
 
     if (!data) {
-      throw new Error('Seller not found');
+      throw new Error("Seller not found");
     } else {
       return data;
-    }
-  }
-
-  async create(seller) {
-    try {
-      return await Seller.create(seller);
-    } catch (error) {
-      if (error instanceof UniqueConstraintError) {
-        throw new Error('Seller already exists');
-      } else {
-        throw new Error('Error creating seller');
-      }
     }
   }
 
