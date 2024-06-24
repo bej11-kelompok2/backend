@@ -9,8 +9,6 @@ const logger = require("./util/logger");
 
 require("dotenv").config();
 
-app.use(logger);
-
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
@@ -21,5 +19,6 @@ app.use("/api/v1", userRoutes, sellerRoutes, cartRoutes, orderRoutes);
 port = process.env.PORT || 3000;
 
 app.listen(3000, () => {
+  logger.info(`Server is running on port ${port}`);
   console.log(`Server is running on port ${port}`);
 });

@@ -1,6 +1,6 @@
 const UserService = require("../usecase/user.service");
 const BaseResponse = require("../util/base.response");
-
+const logger = require("../util/logger");
 class UserController {
   constructor() {
     this.userService = new UserService();
@@ -11,6 +11,7 @@ class UserController {
       const user = await this.userService.findById(req.user.id);
 
       if (!user) {
+        logger.error("User not found");
         return res
           .status(400)
           .json(new BaseResponse(false, "User not found", null));
@@ -18,6 +19,7 @@ class UserController {
 
       return res.json(new BaseResponse(true, "Success", user));
     } catch (error) {
+      logger.error(error.message);
       res.status(500).json(new BaseResponse(false, error.message, null));
     }
   };
@@ -43,6 +45,7 @@ class UserController {
       const user = await this.userService.create(req.body);
       res.json(new BaseResponse(true, "User created", user));
     } catch (error) {
+      logger.error(error.message);
       res.status(400).json(new BaseResponse(false, error.message, null));
     }
   };
@@ -55,7 +58,8 @@ class UserController {
       );
       const data = { user, token };
 
-      if (!user) {
+      if (!data) {
+        logger.error("login failed");
         return res
           .status(400)
           .json(new BaseResponse(false, "User not found", null));
@@ -63,7 +67,8 @@ class UserController {
 
       return res.json(new BaseResponse(true, "Login success", data));
     } catch (error) {
-      res.status(401).json(new BaseResponse(false, error.message, null));
+      logger.error(error.message);
+      res.status(500).json(new BaseResponse(false, error.message, null));
     }
   };
 

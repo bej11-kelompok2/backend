@@ -1,9 +1,9 @@
-const morgan = require('morgan');
+const winston = require("winston");
 
-morgan.token('ip', (req) => req.ip || req.connection.remoteAddress);
-
-const format = 'User Ip: :ip - Method: :method - Endpoint: :url - Status: :status - Time: :response-time ms';
-
-const logger = morgan(format);
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.json(),
+  transports: [new winston.transports.Console({})],
+});
 
 module.exports = logger;
