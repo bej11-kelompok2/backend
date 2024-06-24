@@ -1,7 +1,11 @@
 const UserRepository = require("../repository/user.repository");
 const bcrypt = require("bcrypt");
-const { generateToken } = require("../util/jwt.config");
-const { sendEmail } = require('../util/mail');
+const {
+  generateToken,
+  verifyToken,
+  generateVerifyToken,
+} = require("../util/jwt.config");
+const { sendEmail } = require("../util/mail");
 
 class UserService {
   constructor() {
@@ -16,20 +20,24 @@ class UserService {
     const hashedPassword = await bcrypt.hash(user.password, 10);
     user.password = hashedPassword;
     const newUser = await this.userRepo.create(user);
-    
-    //send email
-    let user = await this.userRepo.findByEmail(user.email);
-    
+
+    let token = generateVerifyToken(newUser.id);
+
     let mail = {
-        from: 'bej11platinum2@gmail.com',
-        to: user.email,
-        subject: 'Pendaftaran Akun di BEJ Platinum',
-        text: 'Hi, ' + user.username + '. \n\r Silakan klik link berikut untuk menyelesaikan pendaftaran Anda. \n\r <a href="http://localhost:3000/api/v1/mail/verify/' + user.id+'">Link Daftar</a>'
-    }
+      from: "bej11platinum2@gmail.com",
+      to: user.email,
+      subject: "Pendaftaran Akun di BEJ Platinum",
+      text:
+        "Hi, " +
+        user.username +
+        '. \n\r Silakan klik link berikut untuk menyelesaikan pendaftaran Anda. \n\r <a href="http://localhost:3000/api/v1/mail/verify/' +
+        token +
+        '">Link Daftar</a>',
+    };
+
     const sendResult = sendEmail(mail);
 
-
-    return {newUser, sendResult};
+    return sendResult;
   }
 
   async update(id, userUpdates) {
@@ -56,7 +64,11 @@ class UserService {
   }
 
   async verify(id) {
-    return await this.userRepo.verify(id);
+    const token = verifyToken(id);
+
+    const verify = await this.userRepo.verify(token);
+
+    return verify;
   }
 }
 
