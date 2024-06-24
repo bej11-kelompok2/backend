@@ -16,14 +16,18 @@ class UserRepository {
 
   async create(user) {
     try {
-      return await User.create(user, {
+      user.isVerified = false;
+
+      const createdUser = await User.create(user, {
         attributes: { exclude: ["password"] },
       });
+
+      return createdUser;
     } catch (error) {
       if (error instanceof UniqueConstraintError) {
         throw new Error("User already exists");
       } else {
-        throw new Error("Error creating user");
+        throw new Error(error.message);
       }
     }
   }
@@ -40,6 +44,23 @@ class UserRepository {
 
   async delete(id) {
     return await User.destroy({ where: { id } });
+  }
+
+  async verify(id) {
+    try {
+      const [affectedRows] = await User.update(
+        { isVerified: true },
+        {
+          where: { id },
+        }
+      );
+
+      if (affectedRows === 0) {
+        throw new Error("User not found or already verified");
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 }
 
