@@ -4,10 +4,6 @@ const { UniqueConstraintError } = require("sequelize");
 class SellerRepository {
   async findById(id) {
     const data = await User.findByPk(id);
-
-    console.log(id);
-    console.log(data);
-
     if (!data) {
       throw new Error("Seller not found");
     } else {

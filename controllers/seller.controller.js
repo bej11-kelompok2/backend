@@ -17,7 +17,6 @@ class SellerController {
 
   login = async (req, res) => {
     try {
-      console.log(req.email, req.password);
       const { seller, token } = await this.sellerService.login(
         req.body.email,
         req.body.password
