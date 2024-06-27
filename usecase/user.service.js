@@ -35,9 +35,9 @@ class UserService {
         '">Link Daftar</a>',
     };
 
-    const sendResult = sendEmail(mail);
+    // const sendResult = sendEmail(mail);
 
-    return sendResult;
+    return token;
   }
 
   async update(id, userUpdates) {

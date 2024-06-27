@@ -1,5 +1,6 @@
-const OrderRepository = require('../repository/order.repository');
-const CartRepository = require('../repository/cart.repository');
+const OrderRepository = require("../repository/order.repository");
+const CartRepository = require("../repository/cart.repository");
+const logger = require("../util/logger");
 
 class OrderService {
   constructor() {
@@ -16,9 +17,6 @@ class OrderService {
       }
 
       const cart = await this.cartRepository.userCart(user.id);
-
-      console.log(cart.CartItems.length)
-
       if (!cart || cart.CartItems.length === 0) {
         throw new Error("Cart is empty");
       }
@@ -26,14 +24,14 @@ class OrderService {
       // Calculate total price
       let total_price = 0;
       cart.CartItems.forEach((item) => {
-        total_price += (item.Item.price * item.quantity);
+        total_price += item.Item.price * item.quantity;
       });
 
       const order = await this.orderRepository.createOrder(userId, total_price);
       await this.orderRepository.createOrderItem(order.id, cart.id);
       return order;
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       throw new Error("Error creating order");
     }
   }
@@ -43,7 +41,7 @@ class OrderService {
       const orders = await this.orderRepository.getOrdersByUserId(userId);
       return orders;
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       throw new Error("Error getting orders");
     }
   }
@@ -57,4 +55,4 @@ class OrderService {
   }
 }
 
-module.exports = OrderService
+module.exports = OrderService;

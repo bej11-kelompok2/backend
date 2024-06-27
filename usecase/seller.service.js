@@ -23,7 +23,6 @@ class SellerService {
 
   async createItem(sellerId, item, fileBuffer) {
     //cari seller by id
-    console.log(sellerId);
     const seller = await this.sellerRepo.findById(sellerId);
     if (!seller) {
       throw new Error("Seller not found");
