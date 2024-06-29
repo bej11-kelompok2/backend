@@ -4,7 +4,7 @@
   "description": "Gold Challenge Binar BEJ Wave 11",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "nodemon index.js"
   },
   "repository": {
@@ -33,5 +33,9 @@
     "sequelize": "^6.37.3",
     "swagger-jsdoc": "^6.2.8",
     "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-mock": "^29.7.0"
   }
 }

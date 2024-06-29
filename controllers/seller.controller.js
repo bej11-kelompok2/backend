@@ -54,9 +54,6 @@ class SellerController {
       if (!req.file) {
         throw new Error("Image required");
       }
-
-      console.log(req.user.userId);
-
       const item = await this.sellerService.createItem(
         req.user.userId,
         data,

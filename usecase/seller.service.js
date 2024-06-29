@@ -1,22 +1,50 @@
 const SellerRepository = require("../repository/seller.repository");
 const cloudinary = require("../util/cloudinary");
-const fs = require("fs");
-const upload = require("../util/multer");
+
 class SellerService {
   constructor() {
     this.sellerRepo = new SellerRepository();
   }
 
   async findById(id) {
-    return await this.sellerRepo.findById(id);
+    const seller = await this.sellerRepo.findById(id);
+    if (!seller) {
+      throw new Error("Seller not found");
+    }
+
+    return seller;
   }
 
   async update(id, sellerUpdates) {
-    return await this.sellerRepo.update(id, sellerUpdates);
+    const seller = await this.sellerRepo.findById(id);
+
+    if (!seller) {
+      throw new Error("Seller not found");
+    }
+
+    const updatedSeller = await this.sellerRepo.update(id, sellerUpdates);
+
+    if (!updatedSeller) {
+      throw new Error("Failed to update seller");
+    }
+
+    return updatedSeller;
   }
 
   async delete(id) {
-    return await this.sellerRepo.delete(id);
+    const seller = await this.sellerRepo.findById(id);
+
+    if (!seller) {
+      throw new Error("Seller not found");
+    }
+
+    const deletedSeller = await this.sellerRepo.delete(id);
+
+    if (!deletedSeller) {
+      throw new Error("Failed to delete seller");
+    }
+
+    return deletedSeller;
   }
 
   // Items
@@ -48,10 +76,7 @@ class SellerService {
 
       return newItem;
     } catch (error) {
-      // Tangani kesalahan saat mengunggah ke Cloudinary atau saat membuat item di sellerRepo
-      console.error("Error creating item:", error);
-
-      throw new Error("Failed to create item");
+      throw new Error(error);
     }
   }
 
@@ -70,7 +95,13 @@ class SellerService {
       throw new Error("Seller not found");
     }
 
-    return await this.sellerRepo.findAllItems(sellerId);
+    const items = await this.sellerRepo.findAllItems(sellerId);
+
+    if (!items) {
+      throw new Error("Items not found");
+    }
+
+    return items;
   }
 }
 
