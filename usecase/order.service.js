@@ -32,7 +32,7 @@ class OrderService {
       return order;
     } catch (error) {
       logger.error(error);
-      throw new Error("Error creating order");
+      throw error; // Rethrow the original error to preserve its message
     }
   }
 
