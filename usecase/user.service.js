@@ -13,7 +13,13 @@ class UserService {
   }
 
   async findById(id) {
-    return await this.userRepo.findById(id);
+    const user = await this.userRepo.findById(id);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return user;
   }
 
   async create(user) {
@@ -35,17 +41,41 @@ class UserService {
         '">Link Daftar</a>',
     };
 
-    // const sendResult = sendEmail(mail);
+    const sendResult = sendEmail(mail);
 
     return token;
   }
 
   async update(id, userUpdates) {
-    return await this.userRepo.update(id, userUpdates);
+    const user = await this.userRepo.findById(id);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const updatedUser = await this.userRepo.update(id, userUpdates);
+
+    if (!updatedUser) {
+      throw new Error("Failed to update user");
+    }
+
+    return updatedUser;
   }
 
   async delete(id) {
-    return await this.userRepo.delete(id);
+    const user = await this.userRepo.findById(id);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const deletedUser = await this.userRepo.delete(id);
+
+    if (!deletedUser) {
+      throw new Error("Failed to delete user");
+    }
+
+    return deletedUser;
   }
 
   async login(email, password) {

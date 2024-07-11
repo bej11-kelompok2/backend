@@ -30,19 +30,25 @@ class SellerController {
 
   update = async (req, res) => {
     try {
+      if (req.user.roles !== "seller") {
+        throw new Error("Unauthorized, Seller only");
+      }
       const seller = await this.sellerService.update(req.user.id, req.body);
       res.json(new BaseResponse(true, "Seller updated", seller));
     } catch (error) {
-      res.status(404).json(new BaseResponse(false, error.message, null));
+      res.status(400).json(new BaseResponse(false, error.message, null));
     }
   };
 
   delete = async (req, res) => {
     try {
+      if (req.user.roles !== "seller") {
+        throw new Error("Unauthorized, Seller only");
+      }
       await this.sellerService.delete(req.params.id);
       res.json(new BaseResponse(true, "Seller deleted", null));
     } catch (error) {
-      res.status(404).json(new BaseResponse(false, error.message, null));
+      res.status(400).json(new BaseResponse(false, error.message, null));
     }
   };
 
@@ -51,12 +57,12 @@ class SellerController {
     const data = JSON.parse(req.body.seller);
 
     try {
+      if (req.user.roles !== "seller") {
+        throw new Error("Unauthorized, Seller only");
+      }
       if (!req.file) {
         throw new Error("Image required");
       }
-
-      console.log(req.user.userId);
-
       const item = await this.sellerService.createItem(
         req.user.userId,
         data,
@@ -66,7 +72,7 @@ class SellerController {
       res.json(new BaseResponse(true, "Item created", item));
     } catch (error) {
       console.error("Error in createItem controller:", error);
-      res.status(404).json(new BaseResponse(false, error.message, null));
+      res.status(400).json(new BaseResponse(false, error.message, null));
     }
   };
 
