@@ -6,8 +6,8 @@ const authenticateToken = require("../middleware/authenticateToken");
 
 router.get("/user", authenticateToken, userController.findById);
 router.post("/user/register", userController.create);
-router.put("/user/:id", userController.update);
-router.delete("/user/:id", userController.delete);
+router.put("/user", authenticateToken, userController.update);
+router.delete("/user", authenticateToken, userController.delete);
 router.post("/user/login", userController.login);
 router.get("/user/verify/:id", userController.verify);
 //router.post('/mail/send', userController.send);

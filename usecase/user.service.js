@@ -36,7 +36,7 @@ class UserService {
       text:
         "Hi, " +
         user.username +
-        '. \n\r Silakan klik link berikut untuk menyelesaikan pendaftaran Anda. \n\r <a href="http://localhost:3000/api/v1/mail/verify/' +
+        '. \n\r Silakan klik link berikut untuk menyelesaikan pendaftaran Anda. \n\r <a href="http://localhost:3000/api/v1/user/verify/' +
         token +
         '">Link Daftar</a>',
     };
@@ -90,7 +90,7 @@ class UserService {
     }
 
     const token = generateToken(user.id, user.role);
-    return { token, user };
+    return { token };
   }
 
   async verify(id) {
