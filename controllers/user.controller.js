@@ -74,7 +74,7 @@ class UserController {
 
   update = async (req, res) => {
     try {
-      const user = await this.userService.update(req.params.id, req.body);
+      const user = await this.userService.update(req.user.userId, req.body);
       return res.json(new BaseResponse(true, "User updated", user));
     } catch (error) {
       res.status(404).json(new BaseResponse(false, error.message, null));
@@ -83,7 +83,7 @@ class UserController {
 
   delete = async (req, res) => {
     try {
-      await this.userService.delete(req.params.id);
+      await this.userService.delete(req.user.userId);
       return res.json(new BaseResponse(true, "User deleted", null));
     } catch (error) {
       res.status(404).json(new BaseResponse(false, error.message, null));

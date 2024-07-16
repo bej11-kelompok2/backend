@@ -57,7 +57,8 @@ class SellerController {
     const data = JSON.parse(req.body.seller);
 
     try {
-      if (req.user.roles !== "seller") {
+      if (req.user.role !== "seller") {
+        console.log(req.user.role);
         throw new Error("Unauthorized, Seller only");
       }
       if (!req.file) {
