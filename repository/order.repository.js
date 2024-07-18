@@ -1,19 +1,15 @@
-const {
-  Order,
-  OrderItem,
-  Cart,
-  CartItem,
-  Item,
-  sequelize,
-} = require("../models");
+const { Order, OrderItem, Cart, CartItem, sequelize } = require("../models");
 const logger = require("../util/logger");
 
 class OrderRepository {
-  async createOrder(userId, total_price) {
+  async createOrder(userId, total_price, address, cartId) {
     try {
       const order = await Order.create({
         user_id: userId,
         total_price: total_price,
+        address: address,
+        cart_id: cartId,
+        status: "PENDING",
       });
       return order;
     } catch (error) {
