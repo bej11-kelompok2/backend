@@ -8,7 +8,7 @@ class OrderService {
     this.cartRepository = new CartRepository();
   }
 
-  async createOrder(userId) {
+  async createOrder(userId, address) {
     try {
       const user = await this.cartRepository.findByUserId(userId);
 
@@ -27,7 +27,12 @@ class OrderService {
         total_price += item.Item.price * item.quantity;
       });
 
-      const order = await this.orderRepository.createOrder(userId, total_price);
+      const order = await this.orderRepository.createOrder(
+        userId,
+        total_price,
+        address,
+        cart.id
+      );
       await this.orderRepository.createOrderItem(order.id, cart.id);
       return order;
     } catch (error) {
