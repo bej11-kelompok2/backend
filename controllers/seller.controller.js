@@ -1,5 +1,6 @@
 const SellerService = require("../usecase/seller.service");
 const BaseResponse = require("../util/base.response");
+const { validationResult } = require("express-validator");
 
 class SellerController {
   constructor() {
@@ -54,16 +55,27 @@ class SellerController {
 
   // Items
   createItem = async (req, res) => {
-    const data = JSON.parse(req.body.seller);
-
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res
+          .status(400)
+          .json(new BaseResponse(false, errors.array(), null));
+      }
+
+      const data = JSON.parse(req.body.seller);
+      console.log(req.body);
+
       if (req.user.role !== "seller") {
         console.log(req.user.role);
         throw new Error("Unauthorized, Seller only");
       }
+
       if (!req.file) {
+        console.log(req.file);
         throw new Error("Image required");
       }
+
       const item = await this.sellerService.createItem(
         req.user.userId,
         data,
