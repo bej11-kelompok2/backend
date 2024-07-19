@@ -29,21 +29,18 @@ class UserService {
 
     let token = generateVerifyToken(newUser.id);
 
+    const BASEURL = process.env.BASEURL;
+
     let mail = {
       from: "bej11platinum2@gmail.com",
       to: user.email,
-      subject: "Pendaftaran Akun di BEJ Platinum",
-      text:
-        "Hi, " +
-        user.username +
-        '. \n\r Silakan klik link berikut untuk menyelesaikan pendaftaran Anda. \n\r <a href="http://localhost:3000/api/v1/user/verify/' +
-        token +
-        '">Link Daftar</a>',
+      subject: "Pendaftaran Akun di BingleShop!",
+      html: `Hi, ${user.username}, terima kasih telah mendaftar di Bingle Shop!. <br /><br /> Sebelum memulai berbelanja, silahkan klik link berikut untuk menyelesaikan pendaftaran Anda. <br /><br /> <a href="${BASEURL}/api/v1/user/verify/${token}">Link Daftar</a>`,
     };
 
     const sendResult = sendEmail(mail);
 
-    return token;
+    return;
   }
 
   async update(id, userUpdates) {
