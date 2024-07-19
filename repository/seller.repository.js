@@ -5,7 +5,7 @@ class SellerRepository {
   async findById(id) {
     const data = await User.findByPk(id);
     if (!data) {
-      throw new Error("Seller not found");
+      return "Seller not found";
     } else {
       return data;
     }

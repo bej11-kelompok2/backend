@@ -9,7 +9,7 @@ class SellerService {
   async findById(id) {
     const seller = await this.sellerRepo.findById(id);
     if (!seller) {
-      throw new Error("Seller not found");
+      return "Seller not found";
     }
 
     return seller;
@@ -19,7 +19,7 @@ class SellerService {
     const seller = await this.sellerRepo.findById(id);
 
     if (!seller) {
-      throw new Error("Seller not found");
+      return "Seller not found";
     }
 
     const updatedSeller = await this.sellerRepo.update(id, sellerUpdates);
@@ -35,7 +35,7 @@ class SellerService {
     const seller = await this.sellerRepo.findById(id);
 
     if (!seller) {
-      throw new Error("Seller not found");
+      return "Seller not found";
     }
 
     const deletedSeller = await this.sellerRepo.delete(id);
@@ -53,7 +53,7 @@ class SellerService {
     //cari seller by id
     const seller = await this.sellerRepo.findById(sellerId);
     if (!seller) {
-      throw new Error("Seller not found");
+      return "Seller not found";
     }
 
     try {
@@ -83,7 +83,7 @@ class SellerService {
   async findItemById(itemId) {
     const item = await this.sellerRepo.findItemById(itemId);
     if (!item) {
-      throw new Error("Item not found");
+      return "Item not found";
     }
 
     return item;
@@ -91,14 +91,15 @@ class SellerService {
 
   async findAllItems(sellerId) {
     const seller = await this.sellerRepo.findById(sellerId);
-    if (!seller) {
-      throw new Error("Seller not found");
+    console.log("Debug seller", seller);
+    if (seller == "Seller not found") {
+      return "Seller not found";
     }
 
     const items = await this.sellerRepo.findAllItems(sellerId);
 
-    if (!items) {
-      throw new Error("Items not found");
+    if (!items || items.length === 0) {
+      return "Items not found";
     }
 
     return items;
