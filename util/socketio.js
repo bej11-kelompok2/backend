@@ -27,7 +27,15 @@ const socket = (app) => {
     console.log("User connected", socket.user.userId);
 
     socket.on("joinRoom", ({ userId, sellerId }) => {
+      if (socket.user.role == "seller") {
+        sellerId = socket.user.userId;
+      } else if (socket.user.role == "user") {
+        userId = socket.user.userId;
+      }
+
       const room = `${userId}_${sellerId}`;
+      console.log(socket.user.userId, socket.user.role);
+
       if (!socket.rooms.has(room)) {
         socket.join(room);
         console.log(`User joined room: ${room}`);
@@ -35,6 +43,12 @@ const socket = (app) => {
     });
 
     socket.on("sendMessage", ({ userId, sellerId, message }) => {
+      if (socket.user.role == "seller") {
+        sellerId = socket.user.userId;
+      } else if (socket.user.role == "user") {
+        userId = socket.user.userId;
+      }
+
       const room = `${userId}_${sellerId}`;
       console.log(`Message received: ${message}`);
       send = socket.broadcast.to(room).emit("message", message);
