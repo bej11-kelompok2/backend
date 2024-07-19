@@ -35,7 +35,7 @@ class UserService {
       from: "bej11platinum2@gmail.com",
       to: user.email,
       subject: "Pendaftaran Akun di BingleShop!",
-      html: `Hi, ${user.username}, terima kasih telah mendaftar di Bingle Shop!. <br /><br /> Sebelum memulai berbelanja, silahkan klik link berikut untuk menyelesaikan pendaftaran Anda. <br /><br /> <a href="${BASEURL}/api/v1/user/verify/${token}">Link Daftar</a>`,
+      html: `Hi, ${user.username}, terima kasih telah mendaftar di Bingle Shop!. <br /><br /> Sebelum memulai berbelanja, silahkan klik link berikut untuk menyelesaikan pendaftaran Anda. <br /><br /> <a href="${BASEURL}/api/v1/user/verify/${token}">Link Verifikasi</a>`,
     };
 
     const sendResult = sendEmail(mail);
@@ -79,6 +79,10 @@ class UserService {
     const user = await this.userRepo.findByEmail(email);
     if (!user) {
       throw new Error("User not found");
+    }
+
+    if (user.isVerified === false) {
+      throw new Error("Please verify your account first");
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
