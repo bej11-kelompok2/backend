@@ -3,8 +3,15 @@ info:
   title: Binar Challenge Gold
   version: 1.0.0
 servers:
-  - url: http://localhost:3000
-	description: Development server
+  - url: http://{{baseurl}}
+  - url: http://l{{baseurl}}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - bearerAuth: []
 tags:
   - name: User
   - name: Seller
@@ -22,9 +29,9 @@ paths:
           schema:
             type: integer
           required: true
-          example: '15'
+          example: "15"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -38,12 +45,13 @@ paths:
           schema:
             type: integer
           required: true
-          example: '15'
+          example: "15"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
+  /api/v1/user:
     put:
       tags:
         - User
@@ -54,33 +62,43 @@ paths:
             schema:
               type: object
               example:
-                username: razanfawwaz
-                email: razan@binar.com
-                password: '123'
-                address: lambhuk
-                phone_number: '01212121'
+                username: razann
+                email: razan10@binar.com
+                password: "123"
+                address: lambnbbbbhuk
+                phone_number: "01212121"
                 gender: male
-      parameters:
-        - name: userId
-          in: path
-          schema:
-            type: integer
-          required: true
-          example: '15'
+      security:
+        - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-  /api/v1/login:
+    get:
+      tags:
+        - User
+      summary: Get Token
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/user/login:
     post:
       tags:
         - User
       summary: User Login
       requestBody:
-        content: {}
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: razan10@binar.com
+                password: "123"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -95,14 +113,31 @@ paths:
             schema:
               type: object
               example:
-                username: razanfawwaz
-                email: razan@binar.com
-                password: '123'
-                address: lambhuk
-                phone_number: '01212121'
+                username: rf
+                email: m_razan@mhs.usk.ac.id
+                password: "123"
+                address: jl dahlan
+                phone_number: "0212121"
                 gender: male
+                role: user
       responses:
-        '200':
+        "200":
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/user/verify/{id}:
+    get:
+      tags:
+        - User
+      summary: Verify User
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -117,25 +152,19 @@ paths:
           schema:
             type: integer
           required: true
-          example: '1'
+          example: "1"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
+  /api/v1/seller:
     delete:
       tags:
         - Seller
       summary: Delete Seller By ID
-      parameters:
-        - name: sellerId
-          in: path
-          schema:
-            type: integer
-          required: true
-          example: '1'
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -151,16 +180,9 @@ paths:
               example:
                 name: tokopaedi
                 email: paedi@binar.com
-                contact_number: '01212121'
-      parameters:
-        - name: sellerId
-          in: path
-          schema:
-            type: integer
-          required: true
-          example: '1'
+                contact_number: "01212121"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -168,16 +190,16 @@ paths:
     get:
       tags:
         - Seller
-      summary: Get All Items
+      summary: Get All Items By Seller Id
       parameters:
         - name: sellerId
           in: path
           schema:
             type: integer
           required: true
-          example: '1'
+          example: "1"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -187,7 +209,7 @@ paths:
         - Seller
       summary: Get Item By ID
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -204,37 +226,40 @@ paths:
               example:
                 name: tokopaedi
                 email: paedi@binar.com
-                password: '123'
-                contact_number: '01212121'
+                password: "123"
+                contact_number: "01212121"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-  /api/v1/seller/{sellerId}/item:
+  /api/v1/seller/item:
     post:
       tags:
         - Seller
       summary: Post Item
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
-              example:
-                name: Baju Kaos Oblong
-                description: Baju warna hitam ukuran xl ready stock nego dm
-                price: '30000'
-                stock: 100
-      parameters:
-        - name: sellerId
-          in: path
-          schema:
-            type: integer
-          required: true
-          example: '1'
+              properties:
+                seller:
+                  type: string
+                  example: |-
+                    {
+                        "name": "Baju Kaos Oblong",
+                        "description": "Baju warna hitam ukuran xl ready stock nego dm",
+                        "price": "30000",
+                        "stock": 100
+                    }
+                image:
+                  type: string
+                  format: binary
+      security:
+        - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -250,13 +275,13 @@ paths:
               type: object
               example:
                 email: paedi@binar.com
-                password: '123'
+                password: "123"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-  /api/v1/cart/{userId}:
+  /api/v1/cart:
     post:
       tags:
         - Cart
@@ -269,15 +294,8 @@ paths:
               example:
                 itemId: 1
                 quantity: 2
-      parameters:
-        - name: userId
-          in: path
-          schema:
-            type: integer
-          required: true
-          example: '15'
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -285,18 +303,12 @@ paths:
       tags:
         - Cart
       summary: Get Cart
-      parameters:
-        - name: userId
-          in: path
-          schema:
-            type: integer
-          required: true
-          example: '15'
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
+  /api/v1/cart/{userId}:
     delete:
       tags:
         - Cart
@@ -307,29 +319,23 @@ paths:
           schema:
             type: integer
           required: true
-          example: '15'
+          example: "15"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-  /api/v1/order/{userId}:
+  /api/v1/order:
     get:
       tags:
         - Order
       summary: Get Orders
-      parameters:
-        - name: userId
-          in: path
-          schema:
-            type: integer
-          required: true
-          example: '15'
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
+  /api/v1/order/{userId}:
     post:
       tags:
         - Order
@@ -342,9 +348,9 @@ paths:
           schema:
             type: integer
           required: true
-          example: '15'
+          example: "15"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -361,9 +367,9 @@ paths:
           schema:
             type: integer
           required: true
-          example: '5'
+          example: "5"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -380,9 +386,9 @@ paths:
           schema:
             type: integer
           required: true
-          example: '5'
+          example: "5"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -399,9 +405,9 @@ paths:
           schema:
             type: integer
           required: true
-          example: '5'
+          example: "5"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -418,9 +424,9 @@ paths:
           schema:
             type: integer
           required: true
-          example: '5'
+          example: "1"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
