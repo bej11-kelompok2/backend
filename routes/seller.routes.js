@@ -21,5 +21,7 @@ router.post(
 );
 router.get("/seller/:sellerId/items", sellerController.findAllItems);
 router.get("/item/:itemId", sellerController.findItemById);
+router.put("/item/:itemId", authenticateToken, sellerController.updateItem);
+router.delete("/item/:itemId", authenticateToken, sellerController.deleteItem);
 
 module.exports = router;

@@ -37,6 +37,18 @@ class SellerRepository {
   async findAllItems(sellerId) {
     return await Item.findAll({ where: { seller_id: sellerId } });
   }
+
+  async updateItem(itemId, itemUpdates, sellerId) {
+    return await Item.update(itemUpdates, {
+      where: { id: itemId, seller_id: sellerId },
+    });
+  }
+
+  async deleteItem(itemId, sellerId) {
+    return await Item.destroy({
+      where: { id: itemId, seller_id: sellerId },
+    });
+  }
 }
 
 module.exports = SellerRepository;

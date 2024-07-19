@@ -10,7 +10,7 @@ class SellerController {
   findById = async (req, res) => {
     try {
       const seller = await this.sellerService.findById(req.params.id);
-      res.json(new BaseResponse(true, "Seller found", seller));
+      res.json(new BaseResponse(true, "Success", seller));
     } catch (error) {
       res.status(404).json(new BaseResponse(false, error.message, null));
     }
@@ -23,7 +23,7 @@ class SellerController {
         req.body.password
       );
       const data = { seller, token };
-      res.json(new BaseResponse(true, "Seller logged in", data));
+      res.json(new BaseResponse(true, "Success", data));
     } catch (error) {
       res.status(401).json(new BaseResponse(false, error.message, null));
     }
@@ -47,7 +47,7 @@ class SellerController {
         throw new Error("Unauthorized, Seller only");
       }
       await this.sellerService.delete(req.params.id);
-      res.json(new BaseResponse(true, "Seller deleted", null));
+      res.json(new BaseResponse(true, "Success", null));
     } catch (error) {
       res.status(400).json(new BaseResponse(false, error.message, null));
     }
@@ -82,7 +82,7 @@ class SellerController {
         req.file.buffer
       );
 
-      res.json(new BaseResponse(true, "Item created", item));
+      res.json(new BaseResponse(true, "Success", item));
     } catch (error) {
       console.error("Error in createItem controller:", error);
       res.status(400).json(new BaseResponse(false, error.message, null));
@@ -92,7 +92,7 @@ class SellerController {
   findItemById = async (req, res) => {
     try {
       const item = await this.sellerService.findItemById(req.params.itemId);
-      res.json(new BaseResponse(true, "Item found", item));
+      res.json(new BaseResponse(true, "Success", item));
     } catch (error) {
       res.status(404).json(new BaseResponse(false, error.message, null));
     }
@@ -107,6 +107,37 @@ class SellerController {
       return res
         .status(500)
         .json(new BaseResponse(false, "An unexpected error occurred", null));
+    }
+  };
+
+  updateItem = async (req, res) => {
+    try {
+      if (req.user.role !== "seller") {
+        throw new Error("Unauthorized, Seller only");
+      }
+
+      const item = await this.sellerService.updateItem(
+        req.params.itemId,
+        req.body,
+        req.user.userId
+      );
+
+      res.json(new BaseResponse(true, "Success", item));
+    } catch (error) {
+      res.status(400).json(new BaseResponse(false, error.message, null));
+    }
+  };
+
+  deleteItem = async (req, res) => {
+    try {
+      if (req.user.role !== "seller") {
+        throw new Error("Unauthorized, Seller only");
+      }
+
+      await this.sellerService.deleteItem(req.params.itemId, req.user.userId);
+      res.json(new BaseResponse(true, "Success", null));
+    } catch (error) {
+      res.status(400).json(new BaseResponse(false, error.message, null));
     }
   };
 }

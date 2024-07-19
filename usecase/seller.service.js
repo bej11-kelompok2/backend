@@ -104,6 +104,40 @@ class SellerService {
 
     return items;
   }
+
+  async updateItem(itemId, itemUpdates, sellerId) {
+    const item = await this.sellerRepo.findItemById(itemId);
+    if (!item) {
+      return "Item not found";
+    }
+
+    const updatedItem = await this.sellerRepo.updateItem(
+      itemId,
+      itemUpdates,
+      sellerId
+    );
+
+    if (!updatedItem) {
+      throw new Error("Failed to update item");
+    }
+
+    return updatedItem;
+  }
+
+  async deleteItem(itemId, sellerId) {
+    const item = await this.sellerRepo.findItemById(itemId);
+    if (!item) {
+      return "Item not found";
+    }
+
+    const deletedItem = await this.sellerRepo.deleteItem(itemId, sellerId);
+
+    if (!deletedItem) {
+      throw new Error("Failed to delete item");
+    }
+
+    return deletedItem;
+  }
 }
 
 module.exports = SellerService;
