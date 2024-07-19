@@ -25,7 +25,9 @@ class SellerRepository {
 
   async createItem(sellerId, item) {
     item.seller_id = sellerId;
-    return await Item.create(item);
+    const createdItem = await Item.create(item);
+    // return createdItem.id as json
+    return { id: createdItem.id };
   }
 
   async findItemById(itemId) {
