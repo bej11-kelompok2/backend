@@ -1,6 +1,7 @@
 const UserService = require("../usecase/user.service");
 const BaseResponse = require("../util/base.response");
 const logger = require("../util/logger");
+const { validationResult } = require("express-validator");
 class UserController {
   constructor() {
     this.userService = new UserService();
@@ -27,20 +28,9 @@ class UserController {
   create = async (req, res) => {
     try {
       // if body is empty or null or undefined return error
-      if (!req.body) {
-        throw new Error("Body is empty");
-      } else if (
-        !req.body.username ||
-        !req.body.email ||
-        !req.body.password ||
-        !req.body.address ||
-        !req.body.phone_number ||
-        !req.body.gender ||
-        !req.body.role
-      ) {
-        throw new Error(
-          "Username, email, password, address, phone_number, gender, role are required"
-        );
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
       }
       const data = await this.userService.create(req.body);
       res.json(new BaseResponse(true, "User created", data));
@@ -52,6 +42,10 @@ class UserController {
 
   login = async (req, res) => {
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
       const { user, token } = await this.userService.login(
         req.body.email,
         req.body.password
