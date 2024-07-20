@@ -9,12 +9,21 @@ const logger = require("./util/logger");
 const http = require("http");
 const socket = require("./util/socketio");
 const server = http.createServer(app);
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
 
 require("dotenv").config();
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+app.get("/ping", (req, res) => {
+  res.send("pong!");
+});
+
+// generate swagger ui
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(express.json());
 app.use("/api/v1", userRoutes, sellerRoutes, cartRoutes, orderRoutes);

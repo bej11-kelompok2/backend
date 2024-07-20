@@ -60,10 +60,15 @@ class CartRepository {
         where: { cart_id: cartId, item_id: itemId },
       });
       if (!cartItem) {
-        throw new Error("Item not found in cart");
+        return "Item not found in cart";
       }
       // delete the item from the cart if the quantity after removal is 0, otherwise decrement the quantity
       // and save the cart item
+
+      if (cartItem.quantity < quantity) {
+        return "Quantity to remove is greater than quantity";
+      }
+
       if (cartItem.quantity - quantity <= 0) {
         await cartItem.destroy();
       } else {
