@@ -129,17 +129,13 @@ class SellerService {
       return "Unauthorized, you are not the seller of this item";
     }
 
-    const [updateCount, updatedItems] = await this.sellerRepo.updateItem(
+    const updatedItems = await this.sellerRepo.updateItem(
       itemId,
       itemUpdates,
       sellerId
     );
 
-    if (updateCount === 0) {
-      throw new Error("Failed to update item");
-    }
-
-    return updatedItems[0];
+    return updatedItems;
   }
 
   async deleteItem(itemId, sellerId) {
