@@ -1,14 +1,21 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class Item extends Model {
     static associate(models) {
       // Each item belongs to one seller
-      Item.belongsTo(models.User, { foreignKey: "id" });
+      Item.belongsTo(models.User, { foreignKey: "seller_id" });
       // Each item can be in many carts through CartItem
-      Item.hasMany(models.CartItem, { foreignKey: "id" });
+      Item.hasMany(models.CartItem, { foreignKey: "item_id" });
       // Each item can be in many orders through OrderItem
-      Item.hasMany(models.OrderItem, { foreignKey: "id" });
+      Item.hasMany(models.OrderItem, { foreignKey: "item_id" });
+    }
+
+    toJSON() {
+      const attributes = { ...this.get() };
+      attributes.price = parseFloat(attributes.price);
+      return attributes;
     }
   }
   Item.init(
@@ -16,7 +23,18 @@ module.exports = (sequelize, DataTypes) => {
       seller_id: DataTypes.INTEGER,
       name: DataTypes.STRING,
       description: DataTypes.TEXT,
-      price: DataTypes.DECIMAL,
+      price: {
+        type: DataTypes.DECIMAL,
+        get() {
+          const value = this.getDataValue("price");
+          // Parse the string to a float
+          return parseFloat(value);
+        },
+        set(value) {
+          // Convert to string to maintain precision in the database
+          this.setDataValue("price", value.toString());
+        },
+      },
       stock: DataTypes.INTEGER,
       images: DataTypes.STRING,
     },

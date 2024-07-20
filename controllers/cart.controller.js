@@ -35,9 +35,9 @@ class CartController {
         req.body.itemId,
         req.body.quantity
       );
-      res.json(new BaseResponse(true, "Item removed from cart", cart));
+      res.json(new BaseResponse(true, "Success", cart));
     } catch (error) {
-      res.status(404).json(new BaseResponse(false, error.message, null));
+      res.status(500).json(new BaseResponse(false, error.message, null));
     }
   };
 }

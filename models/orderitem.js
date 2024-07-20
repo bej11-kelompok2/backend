@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class OrderItem extends Model {
     /**
@@ -9,9 +10,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // Each orderItem belongs to one order
-      OrderItem.belongsTo(models.Order, { foreignKey: "id" });
+      OrderItem.belongsTo(models.Order, { foreignKey: "order_id" });
       // Each orderItem corresponds to one item
-      OrderItem.belongsTo(models.Item, { foreignKey: "id" });
+      OrderItem.belongsTo(models.Item, { foreignKey: "item_id" });
     }
   }
   OrderItem.init(
@@ -19,7 +20,18 @@ module.exports = (sequelize, DataTypes) => {
       order_id: DataTypes.INTEGER,
       item_id: DataTypes.INTEGER,
       quantity: DataTypes.INTEGER,
-      price: DataTypes.DECIMAL,
+      price: {
+        type: DataTypes.DECIMAL,
+        get() {
+          const value = this.getDataValue("price");
+          // Parse the string to a float
+          return parseFloat(value);
+        },
+        set(value) {
+          // Convert to string to maintain precision in the database
+          this.setDataValue("price", value.toString());
+        },
+      },
     },
     {
       sequelize,
