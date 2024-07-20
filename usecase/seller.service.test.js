@@ -8,7 +8,10 @@ jest.mock("../repository/seller.repository", () => {
     delete: jest.fn(),
     createItem: jest.fn(),
     findItemById: jest.fn(),
+    findAllItemsById: jest.fn(),
     findAllItems: jest.fn(),
+    updateItem: jest.fn(),
+    deleteItem: jest.fn(),
   }));
 });
 
@@ -50,13 +53,12 @@ describe("SellerService", () => {
       expect(seller).toEqual({ id: 1, name: "Seller" });
     });
 
-    it("should throw error if seller not found", async () => {
+    it("should return 'Seller not found' if seller not found", async () => {
       // Mock repository response
       sellerService.sellerRepo.findById.mockResolvedValue(null);
 
-      await expect(sellerService.findById(1)).rejects.toThrow(
-        "Seller not found"
-      );
+      const result = await sellerService.findById(1);
+      expect(result).toBe("Seller not found");
     });
   });
 
@@ -69,10 +71,15 @@ describe("SellerService", () => {
         name: "Seller",
       });
 
-      sellerService.sellerRepo.update.mockResolvedValue({
-        id: 1,
-        name: "Updated Seller",
-      });
+      sellerService.sellerRepo.update.mockResolvedValue([
+        1,
+        [
+          {
+            id: 1,
+            name: "Updated Seller",
+          },
+        ],
+      ]);
 
       const updatedSeller = await sellerService.update(1, {
         name: "Updated Seller",
@@ -80,13 +87,12 @@ describe("SellerService", () => {
       expect(updatedSeller).toEqual({ id: 1, name: "Updated Seller" });
     });
 
-    it("should throw error if seller not found", async () => {
+    it("should return 'Seller not found' if seller not found", async () => {
       // Mock repository response
       sellerService.sellerRepo.findById.mockResolvedValue(null);
 
-      await expect(
-        sellerService.update(1, { name: "Updated Seller" })
-      ).rejects.toThrow("Seller not found");
+      const result = await sellerService.update(1, { name: "Updated Seller" });
+      expect(result).toBe("Seller not found");
     });
 
     it("should throw error if failed to update seller", async () => {
@@ -96,7 +102,7 @@ describe("SellerService", () => {
         name: "Seller",
       });
 
-      sellerService.sellerRepo.update.mockResolvedValue(null);
+      sellerService.sellerRepo.update.mockResolvedValue([0, []]);
 
       await expect(
         sellerService.update(1, { name: "Updated Seller" })
@@ -113,20 +119,18 @@ describe("SellerService", () => {
         name: "Seller",
       });
 
-      sellerService.sellerRepo.delete.mockResolvedValue({
-        id: 1,
-        name: "Deleted Seller",
-      });
+      sellerService.sellerRepo.delete.mockResolvedValue(1);
 
       const deletedSeller = await sellerService.delete(1);
-      expect(deletedSeller).toEqual({ id: 1, name: "Deleted Seller" });
+      expect(deletedSeller).toEqual(1);
     });
 
-    it("should throw error if seller not found", async () => {
+    it("should return 'Seller not found' if seller not found", async () => {
       // Mock repository response
       sellerService.sellerRepo.findById.mockResolvedValue(null);
 
-      await expect(sellerService.delete(1)).rejects.toThrow("Seller not found");
+      const result = await sellerService.delete(1);
+      expect(result).toBe("Seller not found");
     });
 
     it("should throw error if failed to delete seller", async () => {
@@ -136,7 +140,7 @@ describe("SellerService", () => {
         name: "Seller",
       });
 
-      sellerService.sellerRepo.delete.mockResolvedValue(null);
+      sellerService.sellerRepo.delete.mockResolvedValue(0);
 
       await expect(sellerService.delete(1)).rejects.toThrow(
         "Failed to delete seller"
@@ -168,16 +172,16 @@ describe("SellerService", () => {
       });
     });
 
-    it("should throw error if seller not found", async () => {
+    it("should return 'Seller not found' if seller not found", async () => {
       // Mock repository response
       sellerService.sellerRepo.findById.mockResolvedValue(null);
 
-      try {
-        await sellerService.createItem(1, {}, Buffer.from("image"));
-        throw new Error("createItem did not throw an error");
-      } catch (error) {
-        expect(error.message).toBe("Seller not found");
-      }
+      const result = await sellerService.createItem(
+        1,
+        {},
+        Buffer.from("image")
+      );
+      expect(result).toBe("Seller not found");
     });
 
     it("should throw error if failed to create item", async () => {
@@ -189,12 +193,9 @@ describe("SellerService", () => {
 
       sellerService.sellerRepo.createItem.mockResolvedValue(null);
 
-      try {
-        await sellerService.createItem(1, {}, Buffer.from("image"));
-        throw new Error("Failed to create item");
-      } catch (error) {
-        expect(error.message).toBe("Failed to create item");
-      }
+      await expect(
+        sellerService.createItem(1, {}, Buffer.from("image"))
+      ).rejects.toThrow("Failed to create item");
     });
   });
 
@@ -211,13 +212,55 @@ describe("SellerService", () => {
       expect(item).toEqual({ id: 1, name: "Item" });
     });
 
-    it("should throw error if item not found", async () => {
+    it("should return 'Item not found' if item not found", async () => {
       // Mock repository response
       sellerService.sellerRepo.findItemById.mockResolvedValue(null);
 
-      await expect(sellerService.findItemById(1)).rejects.toThrow(
-        "Item not found"
-      );
+      const result = await sellerService.findItemById(1);
+      expect(result).toBe("Item not found");
+    });
+  });
+
+  // Test findAllItemsById method
+  describe("findAllItemsById", () => {
+    it("should find all items by seller id", async () => {
+      // Mock repository response
+      sellerService.sellerRepo.findById.mockResolvedValue({
+        id: 1,
+        name: "Seller",
+      });
+
+      sellerService.sellerRepo.findAllItemsById.mockResolvedValue([
+        { id: 1, name: "Item 1" },
+        { id: 2, name: "Item 2" },
+      ]);
+
+      const items = await sellerService.findAllItemsById(1);
+      expect(items).toEqual([
+        { id: 1, name: "Item 1" },
+        { id: 2, name: "Item 2" },
+      ]);
+    });
+
+    it("should return 'Seller not found' if seller not found", async () => {
+      // Mock repository response
+      sellerService.sellerRepo.findById.mockResolvedValue(null);
+
+      const result = await sellerService.findAllItemsById(1);
+      expect(result).toBe("Seller not found");
+    });
+
+    it("should return 'Items not found' if items not found", async () => {
+      // Mock repository response
+      sellerService.sellerRepo.findById.mockResolvedValue({
+        id: 1,
+        name: "Seller",
+      });
+
+      sellerService.sellerRepo.findAllItemsById.mockResolvedValue([]);
+
+      const result = await sellerService.findAllItemsById(1);
+      expect(result).toBe("Items not found");
     });
   });
 
@@ -225,41 +268,152 @@ describe("SellerService", () => {
   describe("findAllItems", () => {
     it("should find all items", async () => {
       // Mock repository response
-      sellerService.sellerRepo.findById.mockResolvedValue({
-        id: 1,
-        name: "Seller",
-      });
       sellerService.sellerRepo.findAllItems.mockResolvedValue([
         { id: 1, name: "Item 1" },
         { id: 2, name: "Item 2" },
       ]);
 
-      const items = await sellerService.findAllItems(1);
+      const items = await sellerService.findAllItems();
       expect(items).toEqual([
         { id: 1, name: "Item 1" },
         { id: 2, name: "Item 2" },
       ]);
     });
 
-    it("should throw error if seller not found", async () => {
+    it("should return 'Items not found' if no items found", async () => {
       // Mock repository response
-      sellerService.sellerRepo.findById.mockResolvedValue(null);
+      sellerService.sellerRepo.findAllItems.mockResolvedValue([]);
 
-      await expect(sellerService.findAllItems(1)).rejects.toThrow(
-        "Seller not found"
+      const result = await sellerService.findAllItems();
+      expect(result).toBe("Items not found");
+    });
+  });
+
+  // Test updateItem method
+  describe("updateItem", () => {
+    it("should update item", async () => {
+      // Mock repository response
+      sellerService.sellerRepo.findItemById.mockResolvedValue({
+        id: 1,
+        name: "Item",
+        seller_id: 1,
+      });
+
+      sellerService.sellerRepo.updateItem.mockResolvedValue([
+        1,
+        [
+          {
+            id: 1,
+            name: "Updated Item",
+            seller_id: 1,
+          },
+        ],
+      ]);
+
+      const updatedItem = await sellerService.updateItem(
+        1,
+        { name: "Updated Item" },
+        1
       );
+      expect(updatedItem).toEqual({
+        id: 1,
+        name: "Updated Item",
+        seller_id: 1,
+      });
     });
 
-    it("should throw error if items not found", async () => {
+    it("should return 'Item not found' if item not found", async () => {
       // Mock repository response
-      sellerService.sellerRepo.findById.mockResolvedValue({
-        id: 1,
-        name: "Seller",
-      });
-      sellerService.sellerRepo.findAllItems.mockResolvedValue(null);
+      sellerService.sellerRepo.findItemById.mockResolvedValue(null);
 
-      await expect(sellerService.findAllItems(1)).rejects.toThrow(
-        "Items not found"
+      const result = await sellerService.updateItem(
+        1,
+        { name: "Updated Item" },
+        1
+      );
+      expect(result).toBe("Item not found");
+    });
+
+    it("should return 'Unauthorized, you are not the seller of this item' if not the seller", async () => {
+      // Mock repository response
+      sellerService.sellerRepo.findItemById.mockResolvedValue({
+        id: 1,
+        name: "Item",
+        seller_id: 2,
+      });
+
+      const result = await sellerService.updateItem(
+        1,
+        { name: "Updated Item" },
+        1
+      );
+      expect(result).toBe("Unauthorized, you are not the seller of this item");
+    });
+
+    it("should throw error if failed to update item", async () => {
+      // Mock repository response
+      sellerService.sellerRepo.findItemById.mockResolvedValue({
+        id: 1,
+        name: "Item",
+        seller_id: 1,
+      });
+
+      sellerService.sellerRepo.updateItem.mockResolvedValue([0, []]);
+
+      await expect(
+        sellerService.updateItem(1, { name: "Updated Item" }, 1)
+      ).rejects.toThrow("Failed to update item");
+    });
+  });
+
+  // Test deleteItem method
+  describe("deleteItem", () => {
+    it("should delete item", async () => {
+      // Mock repository response
+      sellerService.sellerRepo.findItemById.mockResolvedValue({
+        id: 1,
+        name: "Item",
+        seller_id: 1,
+      });
+
+      sellerService.sellerRepo.deleteItem.mockResolvedValue(1);
+
+      const deletedItem = await sellerService.deleteItem(1, 1);
+      expect(deletedItem).toBe("Success delete item");
+    });
+
+    it("should return 'Item not found' if item not found", async () => {
+      // Mock repository response
+      sellerService.sellerRepo.findItemById.mockResolvedValue(null);
+
+      const result = await sellerService.deleteItem(1, 1);
+      expect(result).toBe("Item not found");
+    });
+
+    it("should return 'Unauthorized, you are not the seller of this item' if not the seller", async () => {
+      // Mock repository response
+      sellerService.sellerRepo.findItemById.mockResolvedValue({
+        id: 1,
+        name: "Item",
+        seller_id: 2,
+      });
+
+      const result = await sellerService.deleteItem(1, 1);
+      expect(result).toBe("Unauthorized, you are not the seller of this item");
+    });
+
+    it("should throw error if failed to delete item", async () => {
+      // Mock repository response
+      sellerService.sellerRepo.findItemById.mockResolvedValue({
+        id: 1,
+        name: "Item",
+        seller_id: 1,
+      });
+
+      sellerService.sellerRepo.deleteItem.mockResolvedValue(0);
+
+      await expect(sellerService.deleteItem(1, 1)).rejects.toThrow(
+        "Failed to delete item"
       );
     });
   });

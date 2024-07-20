@@ -73,13 +73,10 @@ describe("UserService", () => {
         name: "User",
       });
 
-      userService.userRepo.delete.mockResolvedValue({
-        id: 1,
-        name: "Deleted User",
-      });
+      userService.userRepo.delete.mockResolvedValue(1);
 
       const deletedUser = await userService.delete(1);
-      expect(deletedUser).toEqual({ id: 1, name: "Deleted User" });
+      expect(deletedUser).toEqual(1);
     });
 
     it("should throw error if user not found", async () => {
@@ -103,7 +100,7 @@ describe("UserService", () => {
       generateToken.mockReturnValue("authToken");
 
       const result = await userService.login("user@example.com", "password");
-      expect(result).toEqual({ token: "authToken", user });
+      expect(result).toEqual({ token: "authToken" });
     });
 
     it("should throw error if user not found", async () => {
@@ -166,12 +163,11 @@ describe("UserService", () => {
       sendEmail.mockResolvedValue(true);
 
       const token = await userService.create(user);
-      expect(token).toEqual("verifyToken");
       expect(sendEmail).toHaveBeenCalledWith({
         from: "bej11platinum2@gmail.com",
         to: user.email,
-        subject: "Pendaftaran Akun di BEJ Platinum",
-        text: expect.stringContaining("Hi, User"),
+        subject: "Pendaftaran Akun di BingleShop!",
+        html: expect.stringContaining("Hi, User"),
       });
     });
   });

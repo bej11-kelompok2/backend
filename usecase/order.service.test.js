@@ -19,6 +19,7 @@ describe("OrderService", () => {
   describe("createOrder", () => {
     it("should create an order successfully", async () => {
       const userId = 1;
+      const address = "123 Main St";
       const user = { id: userId };
       const cart = {
         id: 1,
@@ -34,12 +35,14 @@ describe("OrderService", () => {
       orderService.orderRepository.createOrder.mockResolvedValue(order);
       orderService.orderRepository.createOrderItem.mockResolvedValue(true);
 
-      const result = await orderService.createOrder(userId);
+      const result = await orderService.createOrder(userId, address);
 
       expect(result).toEqual(order);
       expect(orderService.orderRepository.createOrder).toHaveBeenCalledWith(
         userId,
-        400
+        400,
+        address,
+        cart.id
       );
       expect(orderService.orderRepository.createOrderItem).toHaveBeenCalledWith(
         order.id,
@@ -71,6 +74,7 @@ describe("OrderService", () => {
 
     it("should log and throw an error if there is an error creating the order", async () => {
       const userId = 1;
+      const address = "123 Main St";
       const user = { id: userId };
       const cart = {
         id: 1,
@@ -86,7 +90,7 @@ describe("OrderService", () => {
         new Error("Error creating order")
       );
 
-      await expect(orderService.createOrder(userId)).rejects.toThrow(
+      await expect(orderService.createOrder(userId, address)).rejects.toThrow(
         "Error creating order"
       );
       expect(logger.error).toHaveBeenCalledWith(expect.any(Error));

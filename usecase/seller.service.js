@@ -22,13 +22,16 @@ class SellerService {
       return "Seller not found";
     }
 
-    const updatedSeller = await this.sellerRepo.update(id, sellerUpdates);
+    const [updateCount, updatedSellers] = await this.sellerRepo.update(
+      id,
+      sellerUpdates
+    );
 
-    if (!updatedSeller) {
+    if (updateCount === 0) {
       throw new Error("Failed to update seller");
     }
 
-    return updatedSeller;
+    return updatedSellers[0];
   }
 
   async delete(id) {
@@ -38,26 +41,24 @@ class SellerService {
       return "Seller not found";
     }
 
-    const deletedSeller = await this.sellerRepo.delete(id);
+    const deleteCount = await this.sellerRepo.delete(id);
 
-    if (!deletedSeller) {
+    if (deleteCount === 0) {
       throw new Error("Failed to delete seller");
     }
 
-    return deletedSeller;
+    return deleteCount;
   }
 
   // Items
 
   async createItem(sellerId, item, fileBuffer) {
-    //cari seller by id
     const seller = await this.sellerRepo.findById(sellerId);
     if (!seller) {
       return "Seller not found";
     }
 
     try {
-      // Upload image ke Cloudinary
       const uploadResult = await new Promise((resolve, reject) => {
         const upload = cloudinary.uploader.upload_stream((error, result) => {
           if (result) {
@@ -73,6 +74,10 @@ class SellerService {
       item.images = uploadResult.secure_url;
 
       const newItem = await this.sellerRepo.createItem(sellerId, item);
+
+      if (!newItem) {
+        throw new Error("Failed to create item");
+      }
 
       return newItem;
     } catch (error) {
@@ -91,8 +96,7 @@ class SellerService {
 
   async findAllItemsById(sellerId) {
     const seller = await this.sellerRepo.findById(sellerId);
-    console.log("Debug seller", seller);
-    if (seller == "Seller not found") {
+    if (!seller) {
       return "Seller not found";
     }
 
@@ -125,17 +129,17 @@ class SellerService {
       return "Unauthorized, you are not the seller of this item";
     }
 
-    const updatedItem = await this.sellerRepo.updateItem(
+    const [updateCount, updatedItems] = await this.sellerRepo.updateItem(
       itemId,
       itemUpdates,
       sellerId
     );
 
-    if (!updatedItem) {
+    if (updateCount === 0) {
       throw new Error("Failed to update item");
     }
 
-    return updatedItem;
+    return updatedItems[0];
   }
 
   async deleteItem(itemId, sellerId) {
@@ -148,9 +152,9 @@ class SellerService {
       return "Unauthorized, you are not the seller of this item";
     }
 
-    const deletedItem = await this.sellerRepo.deleteItem(itemId, sellerId);
+    const deleteCount = await this.sellerRepo.deleteItem(itemId, sellerId);
 
-    if (!deletedItem) {
+    if (deleteCount === 0) {
       throw new Error("Failed to delete item");
     }
 
