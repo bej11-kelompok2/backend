@@ -19,7 +19,8 @@ router.post(
   createItemValidation,
   sellerController.createItem
 );
-router.get("/seller/:sellerId/items", sellerController.findAllItems);
+router.get("/seller/:sellerId/items", sellerController.findAllItemsById);
+router.get("/items", sellerController.findAllItems);
 router.get("/item/:itemId", sellerController.findItemById);
 router.put("/item/:itemId", authenticateToken, sellerController.updateItem);
 router.delete("/item/:itemId", authenticateToken, sellerController.deleteItem);

@@ -34,8 +34,12 @@ class SellerRepository {
     return await Item.findOne({ where: { id: itemId } });
   }
 
-  async findAllItems(sellerId) {
+  async findAllItemsById(sellerId) {
     return await Item.findAll({ where: { seller_id: sellerId } });
+  }
+
+  async findAllItems() {
+    return await Item.findAll();
   }
 
   async updateItem(itemId, itemUpdates, sellerId) {

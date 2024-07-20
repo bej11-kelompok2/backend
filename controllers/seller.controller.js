@@ -105,15 +105,26 @@ class SellerController {
     }
   };
 
-  findAllItems = async (req, res) => {
+  findAllItemsById = async (req, res) => {
     try {
-      const items = await this.sellerService.findAllItems(req.params.sellerId);
+      const items = await this.sellerService.findAllItemsById(
+        req.params.sellerId
+      );
       return res.status(200).json(new BaseResponse(true, "Success", items));
     } catch (error) {
       console.log("Error in findAllItems controller:", error);
       return res
         .status(500)
         .json(new BaseResponse(false, "An unexpected error occurred", null));
+    }
+  };
+
+  findAllItems = async (req, res) => {
+    try {
+      const items = await this.sellerService.findAllItems();
+      res.json(new BaseResponse(true, "Success", items));
+    } catch (error) {
+      res.status(404).json(new BaseResponse(false, error.message, null));
     }
   };
 

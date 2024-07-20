@@ -89,14 +89,24 @@ class SellerService {
     return item;
   }
 
-  async findAllItems(sellerId) {
+  async findAllItemsById(sellerId) {
     const seller = await this.sellerRepo.findById(sellerId);
     console.log("Debug seller", seller);
     if (seller == "Seller not found") {
       return "Seller not found";
     }
 
-    const items = await this.sellerRepo.findAllItems(sellerId);
+    const items = await this.sellerRepo.findAllItemsById(sellerId);
+
+    if (!items || items.length === 0) {
+      return "Items not found";
+    }
+
+    return items;
+  }
+
+  async findAllItems() {
+    const items = await this.sellerRepo.findAllItems();
 
     if (!items || items.length === 0) {
       return "Items not found";
