@@ -5,7 +5,7 @@ class SellerRepository {
   async findById(id) {
     const data = await User.findByPk(id);
     if (!data) {
-      throw new Error("Seller not found");
+      return "Seller not found";
     } else {
       return data;
     }
@@ -25,7 +25,9 @@ class SellerRepository {
 
   async createItem(sellerId, item) {
     item.seller_id = sellerId;
-    return await Item.create(item);
+    const createdItem = await Item.create(item);
+    // return createdItem.id as json
+    return { id: createdItem.id };
   }
 
   async findItemById(itemId) {
@@ -34,6 +36,18 @@ class SellerRepository {
 
   async findAllItems(sellerId) {
     return await Item.findAll({ where: { seller_id: sellerId } });
+  }
+
+  async updateItem(itemId, itemUpdates, sellerId) {
+    return await Item.update(itemUpdates, {
+      where: { id: itemId, seller_id: sellerId },
+    });
+  }
+
+  async deleteItem(itemId, sellerId) {
+    return await Item.destroy({
+      where: { id: itemId, seller_id: sellerId },
+    });
   }
 }
 

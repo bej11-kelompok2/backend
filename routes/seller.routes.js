@@ -3,6 +3,7 @@ const router = express.Router();
 const SellerController = require("../controllers/seller.controller");
 const upload = require("../util/multer");
 const authenticateToken = require("../middleware/authenticateToken");
+const { createItemValidation } = require("../middleware/seller.validation");
 const sellerController = new SellerController();
 
 //rute seller
@@ -14,10 +15,13 @@ router.delete("/seller", authenticateToken, sellerController.delete);
 router.post(
   "/seller/item",
   authenticateToken,
-  upload.single("image"),
+  upload.single("image"), // Move this before validation
+  createItemValidation,
   sellerController.createItem
 );
 router.get("/seller/:sellerId/items", sellerController.findAllItems);
 router.get("/item/:itemId", sellerController.findItemById);
+router.put("/item/:itemId", authenticateToken, sellerController.updateItem);
+router.delete("/item/:itemId", authenticateToken, sellerController.deleteItem);
 
 module.exports = router;
