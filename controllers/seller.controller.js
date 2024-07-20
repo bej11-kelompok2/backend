@@ -134,8 +134,12 @@ class SellerController {
         throw new Error("Unauthorized, Seller only");
       }
 
-      await this.sellerService.deleteItem(req.params.itemId, req.user.userId);
-      res.json(new BaseResponse(true, "Success", null));
+      const data = await this.sellerService.deleteItem(
+        req.params.itemId,
+        req.user.userId
+      );
+
+      res.json(new BaseResponse(true, "Success", data));
     } catch (error) {
       res.status(400).json(new BaseResponse(false, error.message, null));
     }

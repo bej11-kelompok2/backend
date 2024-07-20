@@ -111,6 +111,10 @@ class SellerService {
       return "Item not found";
     }
 
+    if (item.seller_id !== sellerId) {
+      return "Unauthorized, you are not the seller of this item";
+    }
+
     const updatedItem = await this.sellerRepo.updateItem(
       itemId,
       itemUpdates,
@@ -130,13 +134,17 @@ class SellerService {
       return "Item not found";
     }
 
+    if (item.seller_id !== sellerId) {
+      return "Unauthorized, you are not the seller of this item";
+    }
+
     const deletedItem = await this.sellerRepo.deleteItem(itemId, sellerId);
 
     if (!deletedItem) {
       throw new Error("Failed to delete item");
     }
 
-    return deletedItem;
+    return "Success delete item";
   }
 }
 
