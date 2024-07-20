@@ -8,7 +8,7 @@ const sellerController = new SellerController();
 
 //rute seller
 router.get("/seller/:id", sellerController.findById);
-router.put("/seller", authenticateToken, sellerController.update);
+router.patch("/seller", authenticateToken, sellerController.update);
 router.delete("/seller", authenticateToken, sellerController.delete);
 
 //rute item
@@ -22,7 +22,7 @@ router.post(
 router.get("/seller/:sellerId/items", sellerController.findAllItemsById);
 router.get("/items", sellerController.findAllItems);
 router.get("/item/:itemId", sellerController.findItemById);
-router.put("/item/:itemId", authenticateToken, sellerController.updateItem);
+router.patch("/item/:itemId", authenticateToken, sellerController.updateItem);
 router.delete("/item/:itemId", authenticateToken, sellerController.deleteItem);
 
 module.exports = router;
