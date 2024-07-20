@@ -63,8 +63,15 @@ class SellerController {
           .json(new BaseResponse(false, errors.array(), null));
       }
 
-      const data = JSON.parse(req.body.seller);
-      console.log(req.body);
+      // const data = JSON.parse(req.body.seller);
+      const data = {
+        name: req.body.name,
+        description: req.body.description,
+        price: req.body.price,
+        stock: req.body.stock,
+      };
+
+      console.log(data);
 
       if (req.user.role !== "seller") {
         console.log(req.user.role);
